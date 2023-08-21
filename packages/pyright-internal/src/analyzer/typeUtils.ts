@@ -1912,6 +1912,14 @@ export function derivesFromClassRecursive(classType: ClassType, baseClassToFind:
 }
 
 export function synthesizeTypeVarForSelfCls(classType: ClassType, isClsParam: boolean): TypeVarType {
+    if (classType.details.name === 'BrainAgent') {
+        const memberNames = Array.from(classType.details.fields.keys()).join(',');
+        console.log(`>>> synthesizeTypeVarForSelfCls: members = ${memberNames}`);
+
+        const stackTrace = Error().stack;
+        console.log(`>>> ${stackTrace}`);
+    }
+
     const selfType = TypeVarType.createInstance(`__type_of_self__`);
     const scopeId = getTypeVarScopeId(classType) ?? '';
     selfType.details.isSynthesized = true;
