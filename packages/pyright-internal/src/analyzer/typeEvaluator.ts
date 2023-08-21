@@ -16262,12 +16262,13 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
             return { classType, decoratedType };
         } catch (e) {
             if (OperationCanceledException.is(e)) {
-                const ex = e as OperationCanceledException;
                 console.log(
                     `>>> getTypeOfClass for ${node.name.value} threw OperationCanceledException ${
-                        ex.stack ? ex.stack : ''
+                        e.stack ? e.stack : ''
                     }`
                 );
+
+                e.isTypeCacheInvalid = true;
             } else {
                 console.log(`>>> getTypeOfClass for ${node.name.value} threw exception ${e}`);
             }
