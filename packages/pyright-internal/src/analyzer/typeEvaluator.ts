@@ -681,14 +681,6 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
             }
         }
 
-        if (typeResult.type.category === TypeCategory.Class && typeResult.type.details.name === 'BrainAgent') {
-            const memberNames = Array.from(typeResult.type.details.fields.keys()).join(',');
-            console.log(`>>> writeTypeCache: ${memberNames}`);
-
-            const stackTrace = Error().stack;
-            console.log(`>>> ${stackTrace}`);
-        }
-
         typeCacheToUse.set(node.id, { typeResult, flags, incompleteGenerationCount: incompleteGenerationCount });
 
         // If the entry is located within a part of the parse tree that is currently being
@@ -4986,19 +4978,9 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
         const isRequired = false;
         const isNotRequired = false;
 
-        if (memberName === 'brain') {
-            console.log('>>> getTypeOfMemberAccessWithBaseType called for brain');
-        }
-
         // If the base type was incomplete and unbound, don't proceed
         // because false positive errors will be generated.
         if (baseTypeResult.isIncomplete && isUnbound(baseTypeResult.type)) {
-            if (memberName === 'brain') {
-                console.log(
-                    '>>> Returning unknown for brain at if (baseTypeResult.isIncomplete && isUnbound(baseTypeResult.type))'
-                );
-            }
-
             return { type: UnknownType.create(/* isIncomplete */ true), isIncomplete: true };
         }
 
@@ -5091,28 +5073,6 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 }
 
                 if (!baseType.details.isVariadic) {
-                    if (memberName === 'brain') {
-                        const boundType = baseType.details.boundType;
-                        if (!boundType) {
-                            console.log(
-                                `>>> Handling TypeVar base type: ${printType(baseType)}, boundType is undefined`
-                            );
-                        } else if (boundType.category === TypeCategory.Class) {
-                            const memberNames = Array.from(boundType.details.fields.keys()).join(',');
-                            console.log(
-                                `>>> Handling TypeVar base type: ${printType(baseType)}, ${printType(
-                                    boundType
-                                )}, ${memberNames}`
-                            );
-                        } else {
-                            console.log(
-                                `>>> Handling TypeVar base type: ${printType(baseType)}, ${printType(
-                                    boundType
-                                )}, boundType is not a class ${boundType.category}`
-                            );
-                        }
-                    }
-
                     return getTypeOfMemberAccessWithBaseType(
                         node,
                         {
@@ -5170,10 +5130,6 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                         /* memberAccessFlags */ undefined,
                         baseTypeResult.bindToType
                     );
-
-                    if (memberName === 'brain' && !typeResult) {
-                        console.log('>>> getTypeOfObjectMember returned undefined');
-                    }
 
                     if (typeResult) {
                         type = addConditionToType(typeResult.type, getTypeCondition(baseType));
@@ -5408,10 +5364,6 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
             // reportFunctionMemberAccess rule is disabled, we don't trigger
             // additional reportUnknownMemberType diagnostics.
             type = isFunctionRule ? AnyType.create() : UnknownType.create();
-
-            if (memberName === 'brain') {
-                console.log('>>> type is undefined near isFunctionRule');
-            }
         }
 
         // Should we specialize the class?
@@ -5491,10 +5443,6 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
         }
 
         if (memberInfo) {
-            if (memberName === 'brain') {
-                console.log('>>> Found memberInfo');
-            }
-
             let type: Type | undefined;
             let isTypeIncomplete = false;
 
@@ -5657,11 +5605,6 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
             (flags & (MemberAccessFlags.AccessClassMembersOnly | MemberAccessFlags.SkipAttributeAccessOverride)) ===
             0
         ) {
-            if (memberName === 'brain') {
-                const memberNames = Array.from(classType.details.fields.keys()).join(',');
-                console.log(`>>> No attribute of that name was found: ${printType(classType)}, ${memberNames}`);
-            }
-
             const generalAttrType = applyAttributeAccessOverride(classType, errorNode, usage, memberName);
             if (generalAttrType) {
                 return {
@@ -15550,16 +15493,6 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 // is located in an unreachable code block.
                 return undefined;
             }
-
-            if (node.name.value === 'BrainAgent') {
-                const memberNames = Array.from(cachedClassType.details.fields.keys()).join(',');
-                console.log(
-                    `>>> getTypeOfClass returning cached class with members: ${memberNames}, isNodeInReturnTypeInferenceContext = ${isNodeInReturnTypeInferenceContext(
-                        node.name
-                    )}`
-                );
-            }
-
             return {
                 classType: cachedClassType,
                 decoratedType: readTypeCache(node, EvaluatorFlags.None) || UnknownType.create(),
@@ -16000,16 +15933,6 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
 
             // The scope for this class becomes the "fields" for the corresponding type.
             const innerScope = ScopeUtils.getScopeForNode(node.suite);
-
-            if (classType.details.name === 'BrainAgent') {
-                if (innerScope === undefined) {
-                    console.log(`>>> Within getTypeOfClass, innerScope of BrainAgent is undefined`);
-                } else {
-                    console.log(
-                        `>>> Within getTypeOfClass, innerScope is defined; symbolTable size = ${innerScope.symbolTable.size}`
-                    );
-                }
-            }
 
             classType.details.fields = innerScope?.symbolTable
                 ? new Map<string, Symbol>(innerScope.symbolTable)
@@ -18621,11 +18544,6 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
 
         const containingClassNode = ParseTreeUtils.getEnclosingClass(functionNode, /* stopAtFunction */ true);
         const classInfo = containingClassNode ? getTypeOfClass(containingClassNode) : undefined;
-
-        if (classInfo && classInfo.classType.details.name === 'BrainAgent') {
-            const memberNames = Array.from(classInfo.classType.details.fields.keys()).join(',');
-            console.log(`>>> Just after getTypeOfClass call in evaluateTypeOfParameter: ${memberNames}`);
-        }
 
         if (
             classInfo &&

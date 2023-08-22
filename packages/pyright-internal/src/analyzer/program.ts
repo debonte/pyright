@@ -1038,20 +1038,6 @@ export class Program {
             // in an inconsistent state. Discard it and replace it with a fresh one. It is
             // Cancellation exceptions are known to handle this correctly.
             if (!OperationCanceledException.is(e) || e.isTypeCacheInvalid) {
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
-                this._console.log('>>>>>>>>>>>>>>>>>>>>>>> CLEAR TYPE CACHE <<<<<<<<<<<<<<<<<<<<<<<');
                 this._createNewEvaluator();
             }
             throw e;
