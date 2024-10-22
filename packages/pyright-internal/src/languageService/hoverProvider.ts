@@ -53,6 +53,7 @@ import {
     getToolTipForType,
     getTypeForToolTip,
 } from './tooltipUtils';
+import { getDeclarationsForNameNodeWithSynthTypes } from './documentSymbolCollector';
 
 export interface HoverTextPart {
     python?: boolean;
@@ -256,18 +257,11 @@ export class HoverProvider {
                 node = node.parent.d.valueExpr;
             }
 
-            const declInfo = this._evaluator.getDeclInfoForNameNode(node);
-            const declarations = declInfo?.decls;
+            const declarations = getDeclarationsForNameNodeWithSynthTypes(this._evaluator, node);
 
             if (declarations && declarations.length > 0) {
                 const primaryDeclaration = HoverProvider.getPrimaryDeclaration(declarations);
                 this._addResultsForDeclaration(results.parts, primaryDeclaration, node);
-            } else if (declInfo && declInfo.synthesizedTypes.length > 0) {
-                const name = node.d.value;
-                declInfo?.synthesizedTypes.forEach((type) => {
-                    this._addResultsForSynthesizedType(results.parts, type, name);
-                });
-                this._addDocumentationPart(results.parts, node, /* resolvedDecl */ undefined);
             } else if (!node.parent || node.parent.nodeType !== ParseNodeType.ModuleName) {
                 // If we had no declaration, see if we can provide a minimal tooltip. We'll skip
                 // this if it's part of a module name, since a module name part with no declaration
